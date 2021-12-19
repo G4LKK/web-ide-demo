@@ -2,12 +2,17 @@
 ContextMap DDDGSMap {
 	contains SandwichContext
 	contains IngredientContext
+	contains OrderContext
+	contains SchoolContext
 
 	SandwichContext [D]<-[U,OHS,PL] IngredientContext
 
+	OrderContext [D]<-[U,OHS,PL] SandwichContext
+
+	SchoolContext [D]<-[U,OHS,PL] OrderContext
+
 }
 
-/* We split the Voyage Planning into a separate bounded context as Evans proposes it in his book. */
 BoundedContext SandwichContext {
 	Module sandwich {
 		basePackage = pt.isep.gs.model
@@ -20,11 +25,15 @@ BoundedContext SandwichContext {
 			ValueObject SandwichDescription
 			ValueObject SandwichName
 			ValueObject SandwichPrice
+			ValueObject SandwichIngredient{
+				String ingredientID
+				int quantity
+				int physicalQuantity
+			}
 		}
 	}
 }
 
-/* Separate bounded context for managing the locations. */
 BoundedContext IngredientContext {
 	Module ingredient {
 		basePackage = pt.isep.gs.model
@@ -40,6 +49,40 @@ BoundedContext IngredientContext {
 			ValueObject LastUpdated
 			ValueObject MinQuantity
 			ValueObject PhysicalQuantity
+		}
+	}
+}
+
+BoundedContext OrderContext {
+	Module order {
+		basePackage = pt.isep.gs.model
+
+		Aggregate Order {
+			Entity Order{
+				aggregateRoot
+			}
+			ValueObject OrderID
+			ValueObject OrderItem{
+				String sandwichID
+				int quantity
+			}
+			ValueObject OrderDate
+		}
+	}
+}
+
+BoundedContext SchoolContext {
+	Module school {
+		basePackage = pt.isep.gs.model
+
+		Aggregate School {
+			Entity School{
+				aggregateRoot
+			}
+			ValueObject SchoolID
+			ValueObject SchoolAddress
+			ValueObject SchoolDesignation
+			ValueObject SchoolRepresentative
 		}
 	}
 }
