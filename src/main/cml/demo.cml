@@ -4,12 +4,15 @@ ContextMap DDDGSMap {
 	contains IngredientContext
 	contains OrderContext
 	contains SchoolContext
+	contains UserContext
 
 	SandwichContext [D]<-[U,OHS,PL] IngredientContext
 
 	OrderContext [D]<-[U,OHS,PL] SandwichContext
 
 	SchoolContext [D]<-[U,OHS,PL] OrderContext
+
+	UserContext [D]<-[U,OHS,PL] SchoolContext
 
 }
 
@@ -83,6 +86,23 @@ BoundedContext SchoolContext {
 			ValueObject SchoolAddress
 			ValueObject SchoolDesignation
 			ValueObject SchoolRepresentative
+		}
+	}
+}
+
+BoundedContext UserContext {
+	Module user {
+		basePackage = pt.isep.gs.model
+
+		Aggregate User {
+			Entity User{
+				aggregateRoot
+			}
+			ValueObject username
+			ValueObject userFirstName
+			ValueObject userLastName
+			ValueObject userRole
+			ValueObject password
 		}
 	}
 }
